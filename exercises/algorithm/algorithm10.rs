@@ -2,7 +2,7 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -30,6 +30,18 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let mut new_point1 = vec![(edge.1.to_string(), edge.2)];
+        if self.adjacency_table.contains_key(edge.0) {
+            let mut new_point1 = new_point1.extend_from_slice(self.adjacency_table.get(edge.0).unwrap());
+        }
+        self.adjacency_table.insert(edge.0.to_string(), new_point1);
+
+        
+        let mut new_point2 = vec![(edge.0.to_string(), edge.2)];
+        if self.adjacency_table.contains_key(edge.1) {
+            let mut new_point2 = new_point2.extend_from_slice(self.adjacency_table.get(edge.1).unwrap());
+        }
+        self.adjacency_table.insert(edge.1.to_string(), new_point2);
     }
 }
 pub trait Graph {

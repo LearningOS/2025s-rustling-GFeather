@@ -3,7 +3,8 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
+use std::collections::HashMap;
+use std::collections::HashSet;
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +32,11 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		if 0 == self.size {
+			return None;
+		}
+		self.size -= 1;
+		self.data.pop()
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -102,6 +106,37 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 fn bracket_match(bracket: &str) -> bool
 {
 	//TODO
+	let leftSet = HashSet::from(['(','[', '{',]);
+	let rightSet = HashSet::from([')', ']', '}']);
+	let map = HashMap::from([('(', ')'),('[', ']'), ('{', '}'),]);
+	let mut leftStack: Stack<char> = Stack::new();
+	let mut rightStack: Stack<char> = Stack::new();
+	let mut bracket_str = bracket.chars();
+	for i in 0..=bracket.len() {
+		if let Some(c) = bracket_str.next() {
+			if leftSet.contains(&c) || rightSet.contains(&c)  {
+
+				if leftSet.contains(&c) {
+					leftStack.push(c);
+				}
+				if rightSet.contains(&c) {
+					match leftStack.pop() {
+						None => return false,
+						Some(x) => {
+							if let Some(k) = map.get(&x) {
+								if *k != c {
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if leftStack.len() > 0 {
+		return false;
+	}
 	true
 }
 
